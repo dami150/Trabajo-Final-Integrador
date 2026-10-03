@@ -68,11 +68,38 @@ namespace tpfinal
         }
             
 
-        public List<List<string>> ConsultaNiveles(ArbolGeneral<ItemCat> arbol)
+		public List<List<string>> ConsultaNiveles(ArbolGeneral<ItemCat> arbol)
 		{
-            return [["Implementar"]];
-        }
-
+			List<List<string>> resultado = new List<List<string>>();
+			if (arbol == null || arbol.Vacio()) 
+				return resultado;
+			
+			Queue<ArbolGeneral<ItemCat>> cola = new Queue<ArbolGeneral<ItemCat>>();
+			cola.Enqueue(arbol);
+			
+			while (cola.Count > 0)
+			{
+				int nivelCantidad = cola.Count;
+				List<string> nivelActual = new List<string>();
+				
+				for (int i = 0; i < nivelCantidad; i++)
+				{
+					var nodo = cola.Dequeue();
+					nivelActual.Add(nodo.getDato().Nombre);
+					
+					foreach (var hijo in nodo.getHijos())
+					{
+						if (hijo != null && !hijo.Vacio())
+						{
+							cola.Enqueue(hijo);
+						}
+					}
+				}
+				resultado.Add(nivelActual);
+			}
+			return resultado;
+		}
+			
 
         public List<ItemCat> Todos(ArbolGeneral<ItemCat> arbol)
         {
