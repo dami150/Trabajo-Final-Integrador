@@ -10,12 +10,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.Use(async (context, next) =>
+{
+    Console.WriteLine(
+        $"[PETICION] {context.Request.Method} " +
+        $"{context.Request.Path}{context.Request.QueryString}");
+
+    await next();
+});
 app.UseSwagger();
 app.UseSwaggerUI();
 
 var estrategia = new Estrategia();
 
-// 1. Crear la raíz
+// 1. Crear la raï¿½z
 ArbolGeneral<ItemCat> arbol = new ArbolGeneral<ItemCat>(
     new ItemCat("Catalogo Global", TipoElemento.Categoria)
 );
@@ -27,9 +35,21 @@ app.MapGet("/api/catalogo/todos", () =>
 {
         var result = estrategia.Todos(arbol);
         return Results.Ok( result );
-   
 })
 .WithName("TodoselCatalogo")
+.WithOpenApi();
+
+// Productos (GET)
+app.MapGet("/api/catalogo/productos", () =>
+{
+    var productos = estrategia
+        .Todos(arbol)
+        .Where(item => item.Tipo == TipoElemento.Producto)
+        .ToList();
+
+    return Results.Ok(productos);
+})
+.WithName("TodosLosProductos")
 .WithOpenApi();
 
 // 2.Agregar (POST)
