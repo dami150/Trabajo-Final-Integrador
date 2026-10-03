@@ -121,8 +121,6 @@ namespace tpfinal
 
             ArbolGeneral<ItemCat> actual = arbol;
 
-            ItemCat Datos = dato;
-
             if (actual.getDatoRaiz().Nombre != ruta[0])
             {
                 throw new Exception("La ruta no comienza en la raíz del árbol.");
@@ -142,16 +140,19 @@ namespace tpfinal
                     }
                 }
 
-                if (!encontrado)
-                {
-                    throw new Exception(
-                        "La ruta al padre no existe: " + rutaAlPadre
-                    );
-                }
-            }
-
-            actual.agregarHijo(new ArbolGeneral<ItemCat>(Datos));
-        }
+	            if (!encontrado)
+	            {
+	                ItemCat nuevaCategoria = new ItemCat(ruta[i], TipoElemento.Categoria);
+	
+	                ArbolGeneral<ItemCat> nuevoNodo = new ArbolGeneral<ItemCat>(nuevaCategoria);
+	
+	                actual.agregarHijo(nuevoNodo);
+	            	actual = nuevoNodo;
+	        	}
+			}
+			
+			actual.agregarHijo(new ArbolGeneral<ItemCat>(dato));
+    	}
 
         public List<ItemCat> Buscar(ArbolGeneral<ItemCat> arbol, string elementoABuscar)
 		{
